@@ -14,6 +14,7 @@ node {
     stage('Test image') {
         
         app.inside {
+            sh "cd /usr/loginapp"
             sh "npm test"
         }
     }
