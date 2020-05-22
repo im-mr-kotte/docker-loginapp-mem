@@ -12,7 +12,7 @@ node {
     }
 
     stage('Run Tests') {
-         sh "docker run -it mrkotte/docker-loginapp npm test"
+         sh "docker run -t mrkotte/docker-loginapp npm test"
     }
 
     stage('Push image') {
