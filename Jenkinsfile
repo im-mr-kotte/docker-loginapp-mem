@@ -7,7 +7,7 @@ node {
     }
 
     stage('Run Tests') {
-        docker.build("mrkotte/docker-loginapp-test", "-f Dockerfile.test")
+        docker.build("mrkotte/docker-loginapp-test", "-f Dockerfile.test .")
     }
 
     stage('Build image') {
