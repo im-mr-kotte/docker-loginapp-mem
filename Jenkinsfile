@@ -6,19 +6,13 @@ node {
         checkout scm
     }
 
-    stage('Run Tests') {
-        docker.build("mrkotte/docker-loginapp-test", "-f Dockerfile.test .")
-    }
-
     stage('Build image') {
         /* This builds the actual image */
         app = docker.build("mrkotte/docker-loginapp")
     }
 
-    stage('Test image') {
-        app.inside {
-            sh "npm install && npm test"
-        }
+    stage('Run Tests') {
+         sh "docker run -it mrkotte/docker-loginapp npm test"
     }
 
     stage('Push image') {
