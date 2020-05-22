@@ -6,6 +6,6 @@ describe('This is just a dummy test 1', () => {
 
 describe('This is just a dummy test 2', () => {
   it('should test that false === false', () => {
-    expect(false).toBe(false)
+    expect(true).toBe(false)
   })
 })

@@ -6,6 +6,10 @@ node {
         checkout scm
     }
 
+    stage('Run Tests') {
+        docker.build("mrkotte/docker-loginapp-test", "-f ${dockerfile} ./Dockerfile.test")
+    }
+
     stage('Build image') {
         /* This builds the actual image */
         app = docker.build("mrkotte/docker-loginapp")
