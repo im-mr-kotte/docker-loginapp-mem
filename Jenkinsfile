@@ -1,7 +1,7 @@
 node {
     def app
     def imageName = "mrkotte/docker-loginapp"
-    def testContainerName = "testContainer"
+    def testContainerName = "testContainer" + ${env.BUILD_ID}
 
     stage('Clone repository') {
         /* Cloning the Repository to our Workspace */
