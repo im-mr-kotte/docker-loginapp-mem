@@ -45,7 +45,7 @@ node {
                 sh "ssh -o StrictHostKeyChecking=no ${devServerLogin} ${startNewContainer}"
             }
             catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-               sh "exit 1"
+               sh "exit 0"
             }
         }
     }
