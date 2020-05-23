@@ -27,10 +27,8 @@ node {
             /*
                 You would need to first register with DockerHub before you can push images to your account
             */
-            steps{
-                docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                                dockerImage.push("latest")
-                }
+            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                            dockerImage.push("latest")
             }
         }
     } else {
@@ -38,7 +36,7 @@ node {
     }
 
     stage('Clean Up') {
-        /* Delete the test container and built image from the Jenkins server */
+        /* Stop and Delete the test container */
         testContainer.stop()
 
         /* Delete the built image from the Jenkins server */
