@@ -36,7 +36,7 @@ node {
 
     stage('Clean Up') {
         /* Delete the container from the Jenkins server */
-        sh "docker rm --f ${testContainerName}"
+        sh "docker rm -f ${testContainerName}"
         /* Delete the created image from the Jenkins server */
         sh "docker image rm ${imageName}"
     }
