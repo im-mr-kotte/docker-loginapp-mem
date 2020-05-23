@@ -1,7 +1,6 @@
 node {
-    def app
+    def dockerImage
     def imageName = "mrkotte/docker-loginapp"
-    def testContainerName = "testContainer-" + env.BUILD_ID
 
     stage('Clone repository') {
         /* Cloning the Repository to our Workspace */
@@ -9,12 +8,17 @@ node {
     }
 
     stage('Build image') {
-        /* This builds the actual image */
-        app = docker.build(imageName)
+        /*
+            below will execute: "docker build -t imageName"
+        */
+        dockerImage = docker.build(imageName)
     }
 
     stage('Run Tests') {
-        sh "docker run -t --name ${testContainerName} ${imageName} npm test"
+        /*
+            below will execute: "docker run -t --name ${testContainerName} ${imageName} npm test"
+        */
+        testContainer = dockerImage.withRun("-t", "npm test")
     }
 
     if (env.BRANCH_NAME == "master") {
@@ -22,12 +26,8 @@ node {
             /*
                 You would need to first register with DockerHub before you can push images to your account
             */
-            steps {
-                echo "Trying to Push Docker Build to DockerHub"
-                docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                    app.push("latest")
-                }
-                echo "Pushed image to DockerHub"
+            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                dockerImage.push("latest")
             }
         }
     } else {
@@ -36,7 +36,10 @@ node {
 
     stage('Clean Up') {
         /* Delete the test container and built image from the Jenkins server */
-        sh "docker rm -f ${testContainerName} && docker image rm ${imageName}"
+        testContainer.stop
+
+        /* Delete the built image from the Jenkins server */
+        sh "docker image rm ${imageName}"
     }
 
 }
