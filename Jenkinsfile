@@ -15,19 +15,23 @@ node {
          sh "docker run -t mrkotte/docker-loginapp npm test"
     }
 
-    stage('Push image') {
-        /* 
-			You would need to first register with DockerHub before you can push images to your account
-		*/
-		when {
-                branch 'master'
-        }
-        steps{
-            echo "Trying to Push Docker Build to DockerHub"
-            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                app.push("latest")
+    if (env.BRANCH_NAME == "master") {
+        stage('Push image') {
+                /*
+        			You would need to first register with DockerHub before you can push images to your account
+        		*/
+
+                steps{
+                    echo "Trying to Push Docker Build to DockerHub"
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                        app.push("latest")
+                    }
+                    echo "Pushed image to DockerHub"
+                }
             }
-            echo "Pushed image to DockerHub"
-        }
     }
+    else {
+        echo "Skipped Image pushing step"
+    }
+
 }
