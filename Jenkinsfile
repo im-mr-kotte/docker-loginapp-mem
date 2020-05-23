@@ -2,6 +2,7 @@ node {
     def dockerImage
     def testContainer
     def imageName = "mrkotte/docker-loginapp"
+    def devServerLogin = "ec2-user@13.53.127.68"
 
     stage('Clone repository') {
         /* Cloning the Repository to our Workspace */
@@ -28,11 +29,26 @@ node {
                 You would need to first register with DockerHub before you can push images to your account
             */
             docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                            dockerImage.push("latest")
+                dockerImage.push("latest")
             }
         }
-    } else {
-        echo "Skipped Image pushing step"
+
+        stage('Deploy Dev') {
+            sshagent(credentials: ['dev-server']) {
+                try {
+                    def startDocker = "sudo service docker start"
+                    def dockrRm = "docker rm -f loginapp"
+                    def dockrRmImage = "docker rmi  ${imageName}:latest"
+                    def startNewContainer = "docker run -d -p 9999:9999 --name loginapp ${imageName}:latest"
+                    sh "ssh -o StrictHostKeyChecking=no ${devServerLogin} ${startDocker}"
+                    sh "ssh -o StrictHostKeyChecking=no ${devServerLogin} ${dockrRm}"
+                    sh "ssh -o StrictHostKeyChecking=no ${devServerLogin} ${dockrRmImage}"
+                    sh "ssh -o StrictHostKeyChecking=no ${devServerLogin} ${startNewContainer}"
+                } catch (e) {
+                    echo "${e}"
+                }
+            }
+        }
     }
 
     stage('Clean Up') {
