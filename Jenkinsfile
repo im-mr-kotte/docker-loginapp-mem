@@ -1,7 +1,7 @@
 node {
     def app
     def imageName = "mrkotte/docker-loginapp"
-    def testContainerName = "testContainer-" + ${env.BUILD_ID}
+    def testContainerName = "testContainer-" + env.BUILD_ID
 
     stage('Clone repository') {
         /* Cloning the Repository to our Workspace */
@@ -35,10 +35,8 @@ node {
     }
 
     stage('Clean Up') {
-        /* Delete the container from the Jenkins server */
-        sh "docker rm -f ${testContainerName}"
-        /* Delete the created image from the Jenkins server */
-        sh "docker image rm ${imageName}"
+        /* Delete the test container and built image from the Jenkins server */
+        sh "docker rm -f ${testContainerName} && docker image rm ${imageName}"
     }
 
 }
