@@ -1,6 +1,7 @@
 node {
     def app
     def imageName = "mrkotte/docker-loginapp"
+    def testContainerName = "testContainer"
 
     stage('Clone repository') {
         /* Cloning the Repository to our Workspace */
@@ -13,7 +14,7 @@ node {
     }
 
     stage('Run Tests') {
-        sh "docker run -t ${imageName} npm test"
+        sh "docker run -t --name ${testContainerName} ${imageName} npm test"
     }
 
     if (env.BRANCH_NAME == "master") {
@@ -34,6 +35,8 @@ node {
     }
 
     stage('Clean Up') {
+        /* Delete the container from the Jenkins server */
+        sh "docker rm --f ${testContainerName}"
         /* Delete the created image from the Jenkins server */
         sh "docker image rm ${imageName}"
     }
