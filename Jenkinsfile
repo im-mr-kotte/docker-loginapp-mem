@@ -35,14 +35,19 @@ node {
 
         stage('Deploy Dev') {
             sshagent(credentials: ['dev-server']) {
-                def startDocker = "sudo service docker start"
-                def dockrRm = "docker rm -f loginapp"
-                def dockrRmImage = "docker rmi  ${imageName}:latest"
-                def startNewContainer = "docker run -d -p 9999:9999 --name loginapp ${imageName}:latest"
-                sh "ssh -o StrictHostKeyChecking=no ${devServerLogin} ${startDocker}"
-                sh "ssh -o StrictHostKeyChecking=no ${devServerLogin} ${dockrRm}"
-                sh "ssh -o StrictHostKeyChecking=no ${devServerLogin} ${dockrRmImage}"
-                sh "ssh -o StrictHostKeyChecking=no ${devServerLogin} ${startNewContainer}"
+                try{
+                    def startDocker = "sudo service docker start"
+                    def dockrRm = "docker rm -f loginapp"
+                    def dockrRmImage = "docker rmi  ${imageName}:latest"
+                    def startNewContainer = "docker run -d -p 9999:9999 --name loginapp ${imageName}:latest"
+                    sh "ssh -o StrictHostKeyChecking=no ${devServerLogin} ${startDocker}"
+                    sh "ssh -o StrictHostKeyChecking=no ${devServerLogin} ${dockrRm}"
+                    sh "ssh -o StrictHostKeyChecking=no ${devServerLogin} ${dockrRmImage}"
+                    sh "ssh -o StrictHostKeyChecking=no ${devServerLogin} ${startNewContainer}"
+                }
+                catch(e){
+                    echo "$e"
+                }
             }
             catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                sh "exit 0"
