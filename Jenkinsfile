@@ -27,8 +27,10 @@ node {
             /*
                 You would need to first register with DockerHub before you can push images to your account
             */
-            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                dockerImage.push("latest")
+            steps{
+                docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                                dockerImage.push("latest")
+                            }
             }
         }
     } else {
