@@ -19,7 +19,7 @@ node {
         /*
             below will execute: "docker run -t --name ${testContainerName} ${imageName} npm test"
         */
-        testContainer = dockerImage.withRun("-t", "npm test")
+        testContainer = dockerImage.run("-t", "npm test")
     }
 
     if (env.BRANCH_NAME == "master") {
@@ -39,7 +39,7 @@ node {
 
     stage('Clean Up') {
         /* Delete the test container and built image from the Jenkins server */
-        //testContainer.stop
+        testContainer.stop
 
         /* Delete the built image from the Jenkins server */
         sh "docker image rm ${imageName}"
