@@ -1,5 +1,6 @@
 node {
     def dockerImage
+    def testContainer
     def imageName = "mrkotte/docker-loginapp"
 
     stage('Clone repository') {
