@@ -39,7 +39,7 @@ node {
 
     stage('Clean Up') {
         /* Delete the test container and built image from the Jenkins server */
-        testContainer.stop
+        //testContainer.stop
 
         /* Delete the built image from the Jenkins server */
         sh "docker image rm ${imageName}"
